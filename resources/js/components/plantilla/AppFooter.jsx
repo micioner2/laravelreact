@@ -4,7 +4,7 @@ const Footer = () => (
 
     <footer className="main-footer">
         <div className="pull-right hidden-xs">
-            <b>Version</b> 2.4.0
+            <b>AÑO </b>2020
             </div>
         <strong> Control Inventario</strong>
     </footer>

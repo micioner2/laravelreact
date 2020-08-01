@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 const AppMenu = () => (
 
@@ -7,13 +8,19 @@ const AppMenu = () => (
             <ul className="sidebar-menu" data-widget="tree">
                 <li className="header">MENU</li>
                 <li>
-                    <a href="#"><i className="fa fa-file-text-o" /> <span>INICIO</span></a>
+                    <NavLink exact to="/" activeClassName="activo"> 
+                        <i className="fa fa-file-text-o" /> <span>INICIO</span>
+                    </NavLink>
                 </li>
                 <li>
-                    <a href="#"><i className="fa fa-book" /> <span>CATEGORIAS</span></a>
+                    <NavLink exact to="/categoria" activeClassName="activo">
+                        <i className="fa fa-book" /> <span>CATEGORIAS</span>
+                    </NavLink>
                 </li>
                 <li>
-                    <a href="#"> <i className="fa fa-book" /> <span>PRODUCTOS</span></a>
+                    <NavLink exact to="/producto" activeClassName="activo">
+                        <i className="fa fa-book" /> <span>PRODUCTOS</span>
+                    </NavLink>
                 </li>
             </ul>
         </section>
