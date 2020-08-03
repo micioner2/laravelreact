@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Swal from '../services/Swal';
 import Paginate from '../services/Paginate';
 import axios from 'axios';
@@ -9,13 +9,16 @@ const Categoria = () => {
 
 
     const [state, setState] = useState({ categorias: [], categoria: { nom_categoria: '' }, opcionModal: 1 })
+    const montado = useRef(false)
 
     const getCategoria = () => {
         let arr = []
         axios.get('ruta/categoria').then(res => {
-            arr = res.data
-            setState({ ...state, categorias: arr })
-            arr.length ? Paginate() : '';
+            if (!montado.current) {
+                arr = res.data
+                setState({ ...state, categorias: arr })
+                arr.length ? Paginate() : '';
+            }
         })
     }
 
@@ -74,6 +77,9 @@ const Categoria = () => {
 
         getCategoria()
 
+      return () => {
+          montado.current = true
+      }
     }, [])
 
 
