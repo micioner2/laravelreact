@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import Swal from '../services/Swal';
 import Paginate from '../services/Paginate';
 import axios from 'axios';
-
+import Header from '../componentes/Header';
+import Table from '../componentes/Table';
+import Modal from '../componentes/Modal';
 
 
 const Categoria = () => {
@@ -10,6 +12,7 @@ const Categoria = () => {
 
     const [state, setState] = useState({ categorias: [], categoria: { nom_categoria: '' }, opcionModal: 1 })
     const montado = useRef(false)
+    const title = "CATEGORIA"
 
     const getCategoria = () => {
         let arr = []
@@ -72,14 +75,42 @@ const Categoria = () => {
         }
     }
 
+    const titleTable = ['CATEGORIA', 'ESTADO', 'OPCIONES']
+
+    const tBody = () => {
+        return (
+            state.categorias.map(a => (
+                <tr key={a.id}>
+                    <td>{a.nom_categoria}</td>
+                    <td><span className={a.estado ? 'label label-primary' : 'label label-danger'}>{a.estado ? 'ACTIVO' : 'DESACTIVADO'}</span></td>
+                    <td>
+                        <button className="btn btn-primary" onClick={() => abrirModal('', a)}><i className="fa fa-pencil"></i></button>
+                    &nbsp; &nbsp;
+                    <button className={a.estado ? 'btn btn-danger' : 'btn btn-success'} onClick={() => updCategoria(a)}><i className={a.estado ? 'fa fa-trash' : 'fa fa-check'}></i></button>
+                    </td>
+                </tr>
+            ))
+        )
+    }
+
+    const Form = () => {
+        return (
+            <div className="form-group">
+                <div className="input-group">
+                    <span className="input-group-addon"><i className="fa fa-th"></i></span>
+                    <input type="text" className="form-control input-lg" placeholder="INGRESE CATEGORIA" onChange={onChange} value={state.categoria.nom_categoria} />
+                </div>
+            </div>
+        )
+    }
 
     useEffect(() => {
 
         getCategoria()
 
-      return () => {
-          montado.current = true
-      }
+        return () => {
+            montado.current = true
+        }
     }, [])
 
 
@@ -87,81 +118,13 @@ const Categoria = () => {
     return (
         <>
 
-            <div className="box-header">
-                <h3 className="box-title">CATEGORIA</h3> &nbsp;&nbsp;&nbsp;
-                <button className="btn btn-primary" onClick={() => abrirModal('R')}><i className="fa fa-plus"></i>&nbsp; NUEVA CATEGORÍA</button>
-            </div>
 
-            {/*  */}
+            <Header title={title} subTitle={'NUEVA '+`${title}`} abrirModal={abrirModal} />
+            <Table titleTable={titleTable} tBody={tBody} />
+            <Modal id="modal-categoria" title={title} 
+                handleOnSubmit={handleOnSubmit} form={Form} opcion={state.opcionModal} />
 
-            <div className="box-body">
-                <div className="row">
-                    <div className="col-lg-12">
-                        <div className="table table-responsive">
-                            <table className="table table-bordered table-striped" id="tabla">
-                                <thead>
-                                    <tr>
-                                        <th>CATEGORÍA</th>
-                                        <th>OPCIONES</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        state.categorias.map(c => (
-                                            <tr key={c.id}>
-                                                <td>{c.nom_categoria}</td>
-                                                <td>
-                                                    <button className="btn btn-primary" onClick={() => abrirModal('', c)}><i className="fa fa-pencil"></i></button>
-                                            &nbsp; &nbsp;
-                                            <button className={c.estado ? 'btn btn-danger' : 'btn btn-success'} onClick={() => updCategoria(c)}><i className={c.estado ? 'fa fa-trash' : 'fa fa-check'}></i></button>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
 
-            </div>
-
-            {/*  */}
-
-            <div className="modal fade" id="modal-categoria">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">X</span>
-                            </button>
-                            <h4 className="modal-title">{state.opcionModal ? 'REGISTRAR CATEGORIA' : 'EDITAR CATEGORIA'}</h4>
-                        </div>
-                        <form className="form" onSubmit={handleOnSubmit}>
-                            <div className="modal-body">
-                                <div className="row">
-                                    <div className="col-lg-12">
-                                        <div className="form-group">
-                                            <div className="input-group">
-                                                <span className="input-group-addon"><i className="fa fa-th"></i></span>
-                                                <input type="text" className="form-control input-lg" placeholder="INGRESE CATEGORIA" onChange={onChange} value={state.categoria.nom_categoria} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="modal-footer">
-                                <div className="row">
-                                    <div className="col-lg-12">
-                                        <button className="btn btn-default" data-dismiss="modal">Cerrar</button>
-                                        <button type="submit" className="btn btn-primary pull-left">{state.opcionModal ? 'REGISTRAR' : 'EDITAR'}</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
         </>
     );
 }
