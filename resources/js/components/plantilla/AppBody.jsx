@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Dashboard from '../dashboard/Dashboard';
+import Dashboard from '../tendencia/Dashboard';
 import Categoria from '../categoria/Categoria';
 import Producto from '../producto/Producto';
 

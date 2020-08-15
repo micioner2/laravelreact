@@ -41,4 +41,13 @@ class ProductoController extends Controller
 
         $producto->save();
     }
+
+    public function search(Request $request)
+    {
+        $search  = $request->search;
+        $productos = Producto::Where('nom_producto','like','%'.$search.'%')
+        ->orderByDesc('nom_producto')->limit('5')->get();
+
+        return json_encode($productos);
+    }
 }

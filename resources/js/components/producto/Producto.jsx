@@ -19,6 +19,8 @@ function Producto() {
     })
     const [categoria, setCategoria] = useState({ categorias: [] })
 
+    const [search, setSearch] = useState({ searchProducto: [] })
+
     const montado = useRef(false)
     const title = "PRODUCTO"
 
@@ -78,6 +80,7 @@ function Producto() {
 
     const onChangeNomProducto = (event) => {
         setState({ ...state, producto: { ...state.producto, nom_producto: event.target.value } })
+        getSearch(event.target.value)
     }
 
     const onChangeIdCategoria = (event) => {
@@ -92,14 +95,24 @@ function Producto() {
         }
     }
 
+    const getSearch = (name) => {
+        let arr = []
+        axios.get('ruta/producto/search?search=' + name).then(res => {
+            arr = res.data
+            setSearch({ searchProducto: arr })
+        })
+    }
+
+    const clickSearch = (name) => setState({ ...state, producto: { ...state.producto, nom_producto: name } })
+
     function abrirModal(type, data) {
         if (type === 'R') {
             setState({ ...state, opcionModal: 1, producto: { id_categoria: 0, nom_producto: '' } })
         } else {
             setState({ ...state, opcionModal: 0, producto: data })
+            getSearch(data.nom_producto)
         }
         $('#modal-producto').modal('show');
-
     }
 
     const titleTable = ['CATEGORIA', 'PRODUCTO', 'ESTADO', 'OPCIONES']
@@ -111,7 +124,7 @@ function Producto() {
                 <tr key={p.id}>
                     <td>{p.nom_categoria}</td>
                     <td>{p.nom_producto}</td>
-                    <td><span className="label label-primary">ACTIVO</span></td>
+                    <td><span className={p.estado ? 'label label-primary' : 'label label-danger'}>{p.estado ? 'ACTIVO' : 'DESACTIVADO'}</span></td>
                     <td>
                         <button className="btn btn-primary" onClick={() => abrirModal('', p)}><i className="fa fa-pencil"></i></button>
                             &nbsp;&nbsp;
@@ -128,7 +141,7 @@ function Producto() {
                 <div className="form-group">
                     <div className="input-group">
                         <span className="input input-group-addon"><i className="fa fa-th"></i></span>
-                        <select className="form-control input-lg" onChange={onChangeIdCategoria}>
+                        <select className="form-control input-lg" onChange={onChangeIdCategoria} value={state.producto.id_categoria}>
                             <option value="0" disabled>SELECCIONE CATEGORIA</option>
                             {
                                 categoria.categorias.map(c => (
@@ -144,6 +157,25 @@ function Producto() {
                         <span className="input input-group-addon"><i className="fa fa-th"></i></span>
                         <input type="text" className="form-control input-lg" onChange={onChangeNomProducto} value={state.producto.nom_producto} placeholder="INGRESE NOMBRE DE PRODUCTO" />
                     </div>
+                    <div className="list-group">
+                        {
+                            state.producto.nom_producto.length ?
+                                // search.searchs.filter(p => p.nom_producto.includes(state.producto.nom_producto.toUpperCase())).map(pr => (
+                                //     <a href="#" className="list-group-item list-group-item-action border-1" key={pr.id}>
+                                //         {pr.nom_producto}
+                                //     </a>
+                                // ))
+
+                                search.searchProducto.map(pr => (
+                                    <a href="#" className="list-group-item list-group-item-action" key={pr.id}
+                                        onClick={() => clickSearch(pr.nom_producto)}>
+                                        {pr.nom_producto}
+                                    </a>
+                                ))
+                                : ''
+                        }
+                    </div>
+
                 </div>
             </>
         )

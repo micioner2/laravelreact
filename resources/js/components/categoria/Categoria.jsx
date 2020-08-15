@@ -118,13 +118,10 @@ const Categoria = () => {
     return (
         <>
 
-
             <Header title={title} subTitle={'NUEVA '+`${title}`} abrirModal={abrirModal} />
             <Table titleTable={titleTable} tBody={tBody} />
             <Modal id="modal-categoria" title={title} 
                 handleOnSubmit={handleOnSubmit} form={Form} opcion={state.opcionModal} />
-
-
         </>
     );
 }
